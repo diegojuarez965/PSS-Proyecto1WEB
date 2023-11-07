@@ -11,7 +11,7 @@
 				<div class="flex flex-col gap-1">
 					<label for="affiliate">Afiliado solicitante</label>
 					<select id="affiliate" v-model="newBenefitInfo.cotitular">
-						<option value="" :selected="true">{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
+						<option value="-1">{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
 						<option v-for="cotitular in userInfo.cotitulares" :value="cotitular.id_cotitular">{{ cotitular.nombre }} {{ cotitular.apellido }}</option>
 					</select>
 				</div>
@@ -22,7 +22,7 @@
 				<div class="flex flex-col gap-1">
 					<label for="license_id">Matrícula</label>
 					<div class="flex items-center gap-2">
-						<label><input type="radio" name="license_type" id="national" value="Nacional" v-model="newBenefitInfo.license_type"> Nacional</label>
+						<label><input type="radio" name="license_type" id="national" value="Nacional" v-model="newBenefitInfo.license_type" selected> Nacional</label>
 						<label><input type="radio" name="license_type" id="state" value="Provincial" v-model="newBenefitInfo.license_type"> Provincial</label>
 					</div>
 					<input type="number" id="license_id" class="input-text" v-model="newBenefitInfo.license_id">
@@ -175,18 +175,40 @@ async function validateAndCreateBenefitRequest(){
 }
 
 function validateBenefitData(){
-	let isValid = newBenefitInfo.physician && newBenefitInfo.physician.lenght > 0;
+	let isValid = ref(true);
+	isValid.value = newBenefitInfo.value.cotitular &&
+		newBenefitInfo.value.physician && newBenefitInfo.value.physician.lenght > 0 &&
+		newBenefitInfo.value.license_type && 
+		newBenefitInfo.value.license_id && newBenefitInfo.value.license_id > 0 &&
+		newBenefitInfo.value.order_date && newBenefitInfo.value.service_id;
 
-	if(!isValid){
-		validationMessageBenefits.value = "<ul>";
-		if(!newBenefitInfo.physician || newBenefitInfo.physician.lenght == 0){
+	if(!isValid.value){
+		validationMessageBenefits.value = "<lu>";
+		
+		if(!newBenefitInfo.value.cotitular){
+			validationMessageBenefits.value += "<li>Debe seleccionar un afiliado solicitante</li>";
+		}
+		if(!newBenefitInfo.value.physician || newBenefitInfo.value.physician.lenght == 0){
 			validationMessageBenefits.value += "<li>Debe ingresar un médico</li>";
 		}
+		if(!newBenefitInfo.value.license_type){
+			validationMessageBenefits.value += "<li>Debe seleccionar un tipo de licencia</li>";
+		}
+		if(!newBenefitInfo.value.license_id || newBenefitInfo.value.license_id < 0){
+			validationMessageBenefits.value += "<li>Debe ingresar un número de licencia positivo</li>";
+		}
+		if(!newBenefitInfo.value.order_date){
+			validationMessageBenefits.value += "<li>Debe ingresar una fecha de orden</li>";
+		}
+		if(!newBenefitInfo.value.service_id){
+			validationMessageBenefits.value += "<li>Debe seleccionar tipo de prestación</li>";
+		}
 
-		validationMessageBenefits.value += "</ul>";
+		validationMessageBenefits.value += "</lu>";
 	}
+	console.log(isValid.value);
 
-	return isValid;
+	return isValid.value;
 }
 
 async function createBenefitRequest(){
