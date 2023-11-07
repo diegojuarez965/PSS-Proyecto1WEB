@@ -11,10 +11,8 @@
 				<div class="flex flex-col gap-1">
 					<label for="affiliate">Afiliado solicitante</label>
 					<select id="affiliate">
-						<option value="1">John Doe</option>
-						<option value="2">Jane Doe</option>
-						<option value="3">Joanne Doe</option>
-						<option value="4">Joe Doe</option>
+						<option>{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
+						<option v-for="cotitular in userInfo.cotitulares" :value="cotitular.id_cotitular"> {{ cotitular.nombre }} {{ cotitular.apellido }} </option>
 					</select>
 				</div>
 				<div class="flex flex-col gap-1">
@@ -36,9 +34,7 @@
 				<div class="flex flex-col gap-1">
 					<label for="service_id">Prestación</label>
 					<select id="service_id">
-						<option value="1">Prestación 1 (60%)</option>
-						<option value="2">Prestación 1 (80%)</option>
-						<option value="3">Prestación 2 (40%)</option>
+						<option v-for="prestacion in userInfo.prestaciones" :value="prestacion.id">{{ prestacion.nombre_prestacion }}</option>
 					</select>
 				</div>
 				<div class="flex flex-col gap-1">
