@@ -22,8 +22,8 @@
 				<div class="flex flex-col gap-1">
 					<label for="license_id">Matrícula</label>
 					<div class="flex items-center gap-2">
-						<label><input type="radio" name="license_type" id="national"> Nacional</label>
-						<label><input type="radio" name="license_type" id="state"> Provincial</label>
+						<label><input type="radio" name="license_type" id="national" value="Nacional" v-model="newBenefitInfo.license_type"> Nacional</label>
+						<label><input type="radio" name="license_type" id="state" value="Provincial" v-model="newBenefitInfo.license_type"> Provincial</label>
 					</div>
 					<input type="number" id="license_id" class="input-text" v-model="newBenefitInfo.license_id">
 				</div>
