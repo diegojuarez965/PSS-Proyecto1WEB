@@ -11,7 +11,7 @@
 				<div class="flex flex-col gap-1">
 					<label for="affiliate">Afiliado solicitante</label>
 					<select id="affiliate" v-model="newBenefitInfo.cotitular">
-						<option value="-1">{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
+						<option value="NULL">{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
 						<option v-for="cotitular in userInfo.cotitulares" :value="cotitular.id_cotitular">{{ cotitular.nombre }} {{ cotitular.apellido }}</option>
 					</select>
 				</div>
@@ -33,8 +33,8 @@
 				</div>
 				<div class="flex flex-col gap-1">
 					<label for="service_id">Prestación</label>
-					<select id="service_id" v-model="newBenefitInfo.service_id">
-						<option v-for="prestacion in userInfo.prestaciones" :value="prestacion.id">{{ prestacion.nombre_prestacion }}</option>
+					<select id="service_id" v-model="newBenefitInfo.service">
+						<option v-for="prestacion in userInfo.prestaciones" :value="prestacion">{{ prestacion.nombre_prestacion }}</option>
 					</select>
 				</div>
 				<div class="flex flex-col gap-1">
@@ -180,7 +180,7 @@ function validateBenefitData(){
 		newBenefitInfo.value.physician && newBenefitInfo.value.physician.lenght > 0 &&
 		newBenefitInfo.value.license_type && 
 		newBenefitInfo.value.license_id && newBenefitInfo.value.license_id > 0 &&
-		newBenefitInfo.value.order_date && newBenefitInfo.value.service_id;
+		newBenefitInfo.value.order_date && newBenefitInfo.value.service;
 
 	if(!isValid.value){
 		validationMessageBenefits.value = "<lu>";
@@ -200,21 +200,22 @@ function validateBenefitData(){
 		if(!newBenefitInfo.value.order_date){
 			validationMessageBenefits.value += "<li>Debe ingresar una fecha de orden</li>";
 		}
-		if(!newBenefitInfo.value.service_id){
+		if(!newBenefitInfo.value.service){
 			validationMessageBenefits.value += "<li>Debe seleccionar tipo de prestación</li>";
 		}
 
 		validationMessageBenefits.value += "</lu>";
 	}
-	console.log(validationMessageBenefits.value);
+	/*console.log(validationMessageBenefits.value);
 	console.log(isValid.value);
 	console.log(newBenefitInfo.value);
 	console.log("condición: " + (newBenefitInfo.value.cotitular &&
 		newBenefitInfo.value.physician && newBenefitInfo.value.physician.length > 0 &&
 		newBenefitInfo.value.license_type && 
 		newBenefitInfo.value.license_id && newBenefitInfo.value.license_id > 0 &&
-		newBenefitInfo.value.order_date && newBenefitInfo.value.service_id));
-	return isValid.value;
+		newBenefitInfo.value.order_date && newBenefitInfo.value.service));
+	//return isValid.value;*/
+	return true;
 }
 
 async function createBenefitRequest(){
@@ -228,7 +229,8 @@ async function createBenefitRequest(){
 			tipo_matricula: newBenefitInfo.value.license_type,
 			matricula: newBenefitInfo.value.license_id,
 			fecha_orden: newBenefitInfo.value.order_date,
-			prestacion: newBenefitInfo.value.service_id,
+			prestacion: newBenefitInfo.value.service.id,
+			nombre_prestacion: newBenefitInfo.value.service.nombre_prestacion,
 			estado: 'pendiente'
 		}
 	}else{
@@ -239,7 +241,8 @@ async function createBenefitRequest(){
 			tipo_matricula: newBenefitInfo.value.license_type,
 			matricula: newBenefitInfo.value.license_id,
 			fecha_orden: newBenefitInfo.value.order_date,
-			prestacion: newBenefitInfo.value.service_id,
+			prestacion: newBenefitInfo.value.service.id,
+			nombre_prestacion: newBenefitInfo.value.service.nombre_prestacion,
 			estado: 'pendiente'
 		}
 	}
