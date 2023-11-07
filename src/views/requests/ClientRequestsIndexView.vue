@@ -194,7 +194,7 @@ function validateBenefitData(){
 		if(!newBenefitInfo.value.license_type){
 			validationMessageBenefits.value += "<li>Debe seleccionar un tipo de licencia</li>";
 		}
-		if(!newBenefitInfo.value.license_id || newBenefitInfo.value.license_id < 0){
+		if(!newBenefitInfo.value.license_id || newBenefitInfo.value.license_id <= 0){
 			validationMessageBenefits.value += "<li>Debe ingresar un número de licencia positivo</li>";
 		}
 		if(!newBenefitInfo.value.order_date){
@@ -206,13 +206,57 @@ function validateBenefitData(){
 
 		validationMessageBenefits.value += "</lu>";
 	}
+	console.log(validationMessageBenefits.value);
 	console.log(isValid.value);
-
+	console.log(newBenefitInfo.value);
+	console.log("condición: " + (newBenefitInfo.value.cotitular &&
+		newBenefitInfo.value.physician && newBenefitInfo.value.physician.length > 0 &&
+		newBenefitInfo.value.license_type && 
+		newBenefitInfo.value.license_id && newBenefitInfo.value.license_id > 0 &&
+		newBenefitInfo.value.order_date && newBenefitInfo.value.service_id));
 	return isValid.value;
 }
 
 async function createBenefitRequest(){
-	console.log(newBenefitInfo);
+	let benefitData;
+
+	if(newBenefitInfo.value.cotitular == "NULL"){
+		benefitData = {
+			cliente: userInfo.value.nroAfiliado,
+			cotitular: null,
+			medico: newBenefitInfo.value.physician,
+			tipo_matricula: newBenefitInfo.value.license_type,
+			matricula: newBenefitInfo.value.license_id,
+			fecha_orden: newBenefitInfo.value.order_date,
+			prestacion: newBenefitInfo.value.service_id,
+			estado: 'pendiente'
+		}
+	}else{
+		benefitData = {
+			cliente: userInfo.value.nroAfiliado,
+			cotitular: newBenefitInfo.value.cotitular,
+			medico: newBenefitInfo.value.physician,
+			tipo_matricula: newBenefitInfo.value.license_type,
+			matricula: newBenefitInfo.value.license_id,
+			fecha_orden: newBenefitInfo.value.order_date,
+			prestacion: newBenefitInfo.value.service_id,
+			estado: 'pendiente'
+		}
+	}
+
+	const {data, error: errorInsertBenefit} = await supabase
+		.from('solicitudes_prestaciones')
+		.insert(benefitData);
+
+	if(errorInsertBenefit){
+        alert('Hubo un error al crear la solicitud de prestación, verifique que todos los campos sean validos.');
+        console.error(errorInsertBenefit);
+    } else {
+        alert('Solicitud de prestación creada con exito.');
+        newBenefitInfo.value = [];
+        actualizarSolicitudesReintegro();
+        closeModal('request-service-modal');
+    }
 }
 
 </script>
