@@ -10,14 +10,14 @@
 			<div class="flex flex-col gap-3">
 				<div class="flex flex-col gap-1">
 					<label for="affiliate">Afiliado solicitante</label>
-					<select id="affiliate">
-						<option>{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
-						<option v-for="cotitular in userInfo.cotitulares" :value="cotitular.id_cotitular"> {{ cotitular.nombre }} {{ cotitular.apellido }} </option>
+					<select id="affiliate" v-model="newBenefitInfo.cotitular">
+						<option value="" :selected="true">{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
+						<option v-for="cotitular in userInfo.cotitulares" :value="cotitular.id_cotitular">{{ cotitular.nombre }} {{ cotitular.apellido }}</option>
 					</select>
 				</div>
 				<div class="flex flex-col gap-1">
 					<label for="physician">Médico</label>
-					<input type="text" id="physician" class="input-text">
+					<input type="text" id="physician" class="input-text" v-model="newBenefitInfo.physician">
 				</div>
 				<div class="flex flex-col gap-1">
 					<label for="license_id">Matrícula</label>
@@ -25,15 +25,15 @@
 						<label><input type="radio" name="license_type" id="national"> Nacional</label>
 						<label><input type="radio" name="license_type" id="state"> Provincial</label>
 					</div>
-					<input type="number" id="license_id" class="input-text">
+					<input type="number" id="license_id" class="input-text" v-model="newBenefitInfo.license_id">
 				</div>
 				<div class="flex flex-col gap-1">
 					<label for="order_date">Fecha de la orden</label>
-					<input type="date" id="order_date" class="input-text">
+					<input type="date" id="order_date" class="input-text" v-model="newBenefitInfo.order_date">
 				</div>
 				<div class="flex flex-col gap-1">
 					<label for="service_id">Prestación</label>
-					<select id="service_id">
+					<select id="service_id" v-model="newBenefitInfo.service_id">
 						<option v-for="prestacion in userInfo.prestaciones" :value="prestacion.id">{{ prestacion.nombre_prestacion }}</option>
 					</select>
 				</div>
@@ -41,7 +41,10 @@
 					<label for="order">Orden</label>
 					<input type="file" id="order" class="file:px-3 file:py-1 file:border file:rounded file:border-blue-700 file:text-blue-700 file:bg-transparent">
 				</div>
-				<button type="button" class="btn border-green-700 text-green-700">Solicitar</button>
+				<div v-if="validationMessageBenefits" class="text-red-700">
+					<div v-html="validationMessageBenefits"></div>
+				</div>
+				<button type="button" class="btn border-green-700 text-green-700" @click="validateAndCreateBenefitRequest">Solicitar</button>
 			</div>
 		</div>
 	</div>
@@ -58,7 +61,7 @@
                     <div class="flex flex-col gap-1">
                         <label for="affiliate">Afiliado solicitante</label>
                         <select id="affiliate" v-model="newReintegroInfo.id">
-                            <option value="" >{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
+                            <option value="">{{ userInfo.nombre }} {{ userInfo.apellido }}</option>
                             <option v-for="cotitular in userInfo.cotitulares" :value="cotitular.id_cotitular" >{{ cotitular.nombre }} {{ cotitular.apellido }}</option>
                         </select>
                     </div>
@@ -119,7 +122,9 @@ import { ref } from 'vue';
 import { userInfo } from '@/router/index.js';
 import { supabase } from '../../supabase.js';
 
+const newBenefitInfo = ref([]);
 const newReintegroInfo = ref([]);
+const validationMessageBenefits = ref("");
 
 async function crearSolicitudReintegro(){
    
@@ -161,6 +166,21 @@ async function actualizarSolicitudesReintegro(){
 		console.error(updateReintegrosError);
 	} else
 		userInfo.value.reintegros = nuevasSolicitudesReintegros;
+}
+
+async function validateAndCreateBenefitRequest(){
+	if(validateBenefitData()){
+		createBenefitRequest();
+	}
+}
+
+function validateBenefitData(){
+	//let isValid = newBenefitInfo[]
+	return true;
+}
+
+async function createBenefitRequest(){
+	console.log(newBenefitInfo);
 }
 
 </script>
