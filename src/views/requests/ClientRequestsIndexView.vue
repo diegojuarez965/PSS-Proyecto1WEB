@@ -175,8 +175,18 @@ async function validateAndCreateBenefitRequest(){
 }
 
 function validateBenefitData(){
-	//let isValid = newBenefitInfo[]
-	return true;
+	let isValid = newBenefitInfo.physician && newBenefitInfo.physician.lenght > 0;
+
+	if(!isValid){
+		validationMessageBenefits.value = "<ul>";
+		if(!newBenefitInfo.physician || newBenefitInfo.physician.lenght == 0){
+			validationMessageBenefits.value += "<li>Debe ingresar un médico</li>";
+		}
+
+		validationMessageBenefits.value += "</ul>";
+	}
+
+	return isValid;
 }
 
 async function createBenefitRequest(){
