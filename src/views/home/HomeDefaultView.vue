@@ -11,11 +11,11 @@
 	import { isAdminLoggedIn, isEmployeeLoggedIn, isClientLoggedIn } from '@/router/index.js';
 
 	const router = useRouter()
-	if(isClientLoggedIn)
+	if(isClientLoggedIn.value == true)
 		router.push('/client');
-	else if(isEmployeeLoggedIn)
+	else if(isEmployeeLoggedIn.value == true)
 		router.push('/employee');
-	else if(isAdminLoggedIn)
+	else if(isAdminLoggedIn.value == true)
 		router.push('/plans');
 </script>
 

@@ -67,7 +67,10 @@
 			userInfo.value = {
 				"nombre":empleadoData[0].nombre,
 				"apellido":empleadoData[0].apellido,
-				"nro_legajo":empleadoData[0].id_empleados
+				"nro_legajo":empleadoData[0].id_empleados,
+				"email":empleadoData[0].email,
+				"telefono":empleadoData[0].telefono,
+				"domicilio":empleadoData[0].domicilio,
 			}
 		} else if (true) {
 			//busco en la tabla de clientes
